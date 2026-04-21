@@ -2,6 +2,7 @@ import { Server, ArrowUpCircle, ChevronDown, Check } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { AgentRuntime, MemberWithUser } from "@multica/core/types";
 import { useWorkspaceId } from "@multica/core/hooks";
+import { useLocale } from "@multica/core/i18n";
 import { memberListOptions } from "@multica/core/workspace/queries";
 import {
   DropdownMenu,
@@ -92,6 +93,7 @@ export function RuntimeList({
   updatableIds?: Set<string>;
 }) {
   const wsId = useWorkspaceId();
+  const { t } = useLocale();
   const { data: members = [] } = useQuery(memberListOptions(wsId));
 
   const getOwnerMember = (ownerId: string | null) => {
@@ -119,14 +121,18 @@ export function RuntimeList({
 
   const selectedOwner = ownerFilter ? getOwnerMember(ownerFilter) : null;
 
+  // Calculate online count
+  const onlineCount = filteredRuntimes.filter((r) => r.status === "online").length;
+  const totalCount = filteredRuntimes.length;
+  const onlineText = t.runtimes.page.onlineCount
+    .replace("{online}", String(onlineCount))
+    .replace("{total}", String(totalCount));
+
   return (
     <div className="overflow-y-auto h-full border-r">
       <PageHeader className="justify-between">
-        <h1 className="text-sm font-semibold">Runtimes</h1>
-        <span className="text-xs text-muted-foreground">
-          {filteredRuntimes.filter((r) => r.status === "online").length}/
-          {filteredRuntimes.length} online
-        </span>
+        <h1 className="text-sm font-semibold">{t.runtimes.page.title}</h1>
+        <span className="text-xs text-muted-foreground">{onlineText}</span>
       </PageHeader>
 
       {/* Filter bar */}
@@ -141,7 +147,7 @@ export function RuntimeList({
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            Mine
+            {t.runtimes.page.mine}
           </button>
           <button
             onClick={() => { onFilterChange("all"); onOwnerFilterChange(null); }}
@@ -151,7 +157,7 @@ export function RuntimeList({
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            All
+            {t.runtimes.page.all}
           </button>
         </div>
 
@@ -169,7 +175,7 @@ export function RuntimeList({
                   <span className="max-w-20 truncate">{selectedOwner.name}</span>
                 </>
               ) : (
-                <span>Owner</span>
+                <span>{t.runtimes.page.owner}</span>
               )}
               <ChevronDown className="h-3 w-3 opacity-50" />
             </DropdownMenuTrigger>
@@ -178,7 +184,7 @@ export function RuntimeList({
                 onClick={() => onOwnerFilterChange(null)}
                 className="flex items-center justify-between"
               >
-                <span className="text-xs">All owners</span>
+                <span className="text-xs">{t.runtimes.page.allOwners}</span>
                 {!ownerFilter && <Check className="h-3.5 w-3.5 text-foreground" />}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -205,14 +211,14 @@ export function RuntimeList({
         <div className="flex flex-col items-center justify-center px-4 py-12">
           <Server className="h-8 w-8 text-muted-foreground/40" />
           <p className="mt-3 text-sm text-muted-foreground">
-            {filter === "mine" ? "No runtimes owned by you" : ownerFilter ? "No runtimes for this owner" : "No runtimes registered"}
+            {filter === "mine"
+              ? t.runtimes.page.noRuntimesMine
+              : ownerFilter
+                ? t.runtimes.page.noRuntimesOwner
+                : t.runtimes.page.noRuntimesRegistered}
           </p>
           <p className="mt-1 text-xs text-muted-foreground text-center">
-            Run{" "}
-            <code className="rounded bg-muted px-1 py-0.5">
-              multica daemon start
-            </code>{" "}
-            to register a local runtime.
+            {t.runtimes.page.registerHint.replace("{command}", "multica daemon start")}
           </p>
         </div>
       ) : (

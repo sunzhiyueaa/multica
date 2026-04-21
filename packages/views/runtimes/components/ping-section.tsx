@@ -1,21 +1,25 @@
+"use client";
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Loader2, CheckCircle2, XCircle, Zap } from "lucide-react";
 import { Button } from "@multica/ui/components/ui/button";
 import { api } from "@multica/core/api";
+import { useLocale } from "@multica/core/i18n";
 import type { RuntimePingStatus } from "@multica/core/types";
 
 const pingStatusConfig: Record<
   RuntimePingStatus,
-  { label: string; icon: typeof Loader2; color: string }
+  { labelKey: keyof typeof import("@multica/core/i18n/modules/runtimes").runtimes["connection"]; icon: typeof Loader2; color: string }
 > = {
-  pending: { label: "Waiting for daemon...", icon: Loader2, color: "text-muted-foreground" },
-  running: { label: "Running test...", icon: Loader2, color: "text-info" },
-  completed: { label: "Connected", icon: CheckCircle2, color: "text-success" },
-  failed: { label: "Failed", icon: XCircle, color: "text-destructive" },
-  timeout: { label: "Timeout", icon: XCircle, color: "text-warning" },
+  pending: { labelKey: "waitingDaemon", icon: Loader2, color: "text-muted-foreground" },
+  running: { labelKey: "runningTest", icon: Loader2, color: "text-info" },
+  completed: { labelKey: "connected", icon: CheckCircle2, color: "text-success" },
+  failed: { labelKey: "failed", icon: XCircle, color: "text-destructive" },
+  timeout: { labelKey: "timeout", icon: XCircle, color: "text-warning" },
 };
 
 export function PingSection({ runtimeId }: { runtimeId: string }) {
+  const { t } = useLocale();
   const [status, setStatus] = useState<RuntimePingStatus | null>(null);
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
@@ -88,13 +92,13 @@ export function PingSection({ runtimeId }: { runtimeId: string }) {
           ) : (
             <Zap className="h-3 w-3" />
           )}
-          {testing ? "Testing..." : "Test Connection"}
+          {testing ? t.runtimes.connection.testing : t.runtimes.connection.testConnection}
         </Button>
 
         {config && Icon && (
           <span className={`inline-flex items-center gap-1 text-xs ${config.color}`}>
             <Icon className={`h-3 w-3 ${isActive ? "animate-spin" : ""}`} />
-            {config.label}
+            {t.runtimes.connection[config.labelKey]}
             {durationMs != null && (
               <span className="text-muted-foreground">
                 ({(durationMs / 1000).toFixed(1)}s)
