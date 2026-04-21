@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "@multica/ui/components/common/theme-provider";
+import { useLocale } from "@multica/core/i18n";
 import { cn } from "@multica/ui/lib/utils";
 
 const LIGHT_COLORS = {
@@ -86,6 +87,7 @@ const themeOptions = [
 
 export function AppearanceTab() {
   const { theme, setTheme } = useTheme();
+  const { locale, setLocale, t } = useLocale();
 
   return (
     <div className="space-y-8">
@@ -136,6 +138,39 @@ export function AppearanceTab() {
                 >
                   {opt.label}
                 </span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Language section */}
+      <section className="space-y-4">
+        <h2 className="text-sm font-semibold">{t.settings.language.title}</h2>
+        <p className="text-sm text-muted-foreground">
+          {t.settings.language.description}
+        </p>
+        <div className="flex gap-3" role="radiogroup" aria-label="Language">
+          {([
+            { value: "en" as const, label: "English" },
+            { value: "zh" as const, label: "中文" },
+          ] as const).map((opt) => {
+            const active = locale === opt.value;
+            return (
+              <button
+                key={opt.value}
+                role="radio"
+                aria-checked={active}
+                aria-label={`Select ${opt.label}`}
+                onClick={() => setLocale(opt.value)}
+                className={cn(
+                  "px-4 py-2 rounded-md text-sm transition-colors",
+                  active
+                    ? "bg-brand text-white font-medium"
+                    : "bg-muted hover:bg-muted/80"
+                )}
+              >
+                {opt.label}
               </button>
             );
           })}

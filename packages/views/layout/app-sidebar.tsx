@@ -77,6 +77,7 @@ import { pinListOptions } from "@multica/core/pins/queries";
 import { useDeletePin, useReorderPins } from "@multica/core/pins/mutations";
 import type { PinnedItem } from "@multica/core/types";
 import { useLogout } from "../auth";
+import { useLocale } from "@multica/core/i18n";
 
 // Stable empty arrays for query defaults. Using an inline `= []` default on
 // `useQuery` creates a new array reference on every render when `data` is
@@ -206,6 +207,7 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ topSlot, searchSlot, headerClassName, headerStyle }: AppSidebarProps = {}) {
+  const { t } = useLocale();
   const { pathname, push } = useNavigation();
   const user = useAuthStore((s) => s.user);
   const userId = useAuthStore((s) => s.user?.id);
@@ -213,6 +215,32 @@ export function AppSidebar({ topSlot, searchSlot, headerClassName, headerStyle }
   const workspace = useCurrentWorkspace();
   const p = useWorkspacePaths();
   const { data: workspaces = EMPTY_WORKSPACES } = useQuery(workspaceListOptions());
+
+  // Translated nav arrays
+  const personalNavWithLabels = personalNav.map((item) => ({
+    ...item,
+    label: item.key === "inbox" ? t.sidebar.inbox : t.sidebar.myIssues,
+  }));
+  const workspaceNavWithLabels = workspaceNav.map((item) => ({
+    ...item,
+    label:
+      item.key === "issues"
+        ? t.sidebar.issues
+        : item.key === "projects"
+          ? t.sidebar.projects
+          : item.key === "autopilots"
+            ? t.sidebar.agents
+            : t.sidebar.agents,
+  }));
+  const configureNavWithLabels = configureNav.map((item) => ({
+    ...item,
+    label:
+      item.key === "runtimes"
+        ? t.sidebar.runtimes
+        : item.key === "skills"
+          ? t.sidebar.settings
+          : t.sidebar.settings,
+  }));
   const { data: myInvitations = EMPTY_INVITATIONS } = useQuery(myInvitationListOptions());
 
   const wsId = workspace?.id;
@@ -451,7 +479,7 @@ export function AppSidebar({ topSlot, searchSlot, headerClassName, headerStyle }
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu className="gap-0.5">
-                {personalNav.map((item) => {
+                {personalNavWithLabels.map((item) => {
                   const href = p[item.key]();
                   const isActive = pathname === href;
                   return (
@@ -463,7 +491,7 @@ export function AppSidebar({ topSlot, searchSlot, headerClassName, headerStyle }
                       >
                         <item.icon />
                         <span>{item.label}</span>
-                        {item.label === "Inbox" && unreadCount > 0 && (
+                        {item.key === "inbox" && unreadCount > 0 && (
                           <span className="ml-auto text-xs">
                             {unreadCount > 99 ? "99+" : unreadCount}
                           </span>
@@ -483,7 +511,7 @@ export function AppSidebar({ topSlot, searchSlot, headerClassName, headerStyle }
                   render={<CollapsibleTrigger />}
                   className="group/trigger cursor-pointer hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
                 >
-                  <span>Pinned</span>
+                  <span>{t.sidebar.pinned}</span>
                   <ChevronRight className="!size-3 ml-1 stroke-[2.5] transition-transform duration-200 group-data-[panel-open]/trigger:rotate-90" />
                   <span className="ml-auto text-[10px] text-muted-foreground opacity-0 transition-opacity group-hover/pinned:opacity-100">{localPinned.length}</span>
                 </SidebarGroupLabel>
@@ -511,10 +539,10 @@ export function AppSidebar({ topSlot, searchSlot, headerClassName, headerStyle }
           )}
 
           <SidebarGroup>
-            <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+            <SidebarGroupLabel>{t.sidebar.workspace}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="gap-0.5">
-                {workspaceNav.map((item) => {
+                {workspaceNavWithLabels.map((item) => {
                   const href = p[item.key]();
                   const isActive = pathname === href;
                   return (
@@ -535,10 +563,10 @@ export function AppSidebar({ topSlot, searchSlot, headerClassName, headerStyle }
           </SidebarGroup>
 
           <SidebarGroup>
-            <SidebarGroupLabel>Configure</SidebarGroupLabel>
+            <SidebarGroupLabel>{t.sidebar.configure}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="gap-0.5">
-                {configureNav.map((item) => {
+                {configureNavWithLabels.map((item) => {
                   const href = p[item.key]();
                   const isActive = pathname === href;
                   return (
@@ -550,7 +578,7 @@ export function AppSidebar({ topSlot, searchSlot, headerClassName, headerStyle }
                       >
                         <item.icon />
                         <span>{item.label}</span>
-                        {item.label === "Runtimes" && hasRuntimeUpdates && (
+                        {item.key === "runtimes" && hasRuntimeUpdates && (
                           <span className="ml-auto size-1.5 rounded-full bg-destructive" />
                         )}
                       </SidebarMenuButton>

@@ -49,9 +49,9 @@ async function getInitialLocale(): Promise<Locale> {
   // 2. Detect from Accept-Language header
   const headersList = await headers();
   const acceptLang = headersList.get("accept-language") ?? "";
-  if (acceptLang.includes("zh")) return "zh";
+  if (acceptLang.includes("en")) return "en";
 
-  return "en";
+  return "zh";
 }
 
 export default async function LandingLayout({

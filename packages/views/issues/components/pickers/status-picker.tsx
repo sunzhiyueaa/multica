@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { IssueStatus, UpdateIssueRequest } from "@multica/core/types";
 import { ALL_STATUSES, STATUS_CONFIG } from "@multica/core/issues/config";
+import { useLocale } from "@multica/core/i18n";
 import { StatusIcon } from "../status-icon";
 import { PropertyPicker, PickerItem } from "./property-picker";
 
@@ -23,10 +24,15 @@ export function StatusPicker({
   onOpenChange?: (v: boolean) => void;
   align?: "start" | "center" | "end";
 }) {
+  const { t } = useLocale();
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen ?? internalOpen;
   const setOpen = controlledOnOpenChange ?? setInternalOpen;
-  const cfg = STATUS_CONFIG[status];
+
+  const statusLabel = (s: IssueStatus) => {
+    const key = s === "in_progress" ? "inProgress" : s;
+    return t.issues.status[key as keyof typeof t.issues.status];
+  };
 
   return (
     <PropertyPicker
@@ -39,7 +45,7 @@ export function StatusPicker({
         customTrigger ?? (
           <>
             <StatusIcon status={status} className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate">{cfg.label}</span>
+            <span className="truncate">{statusLabel(status)}</span>
           </>
         )
       }
@@ -57,7 +63,7 @@ export function StatusPicker({
             }}
           >
             <StatusIcon status={s} className="h-3.5 w-3.5" />
-            <span>{c.label}</span>
+            <span>{statusLabel(s)}</span>
           </PickerItem>
         );
       })}
