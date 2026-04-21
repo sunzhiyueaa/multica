@@ -324,6 +324,116 @@ export type DashboardDict = {
       resume: string;
       configure: string;
     };
+    detail: {
+      properties: string;
+      triggers: string;
+      runHistory: string;
+      dangerZone: string;
+      noTriggers: string;
+      noRuns: string;
+      editTitle: string;
+      addTriggerTitle: string;
+      deleteConfirm: string;
+      deleteDescription: string;
+      notFound: string;
+      nextRun: string;
+      disabled: string;
+    };
+    page: {
+      title: string;
+      newAutopilot: string;
+      searchPlaceholder: string;
+      noAutopilots: string;
+      noAutopilotsDesc: string;
+      startFromScratch: string;
+      name: string;
+      agent: string;
+      mode: string;
+      status: string;
+      lastRun: string;
+      active: string;
+      paused: string;
+      archived: string;
+    };
+    runStatus: {
+      running: string;
+      completed: string;
+      failed: string;
+      pending: string;
+      issueCreated: string;
+      issueLinked: string;
+    };
+    fields: {
+      name: string;
+      prompt: string;
+      agent: string;
+      priority: string;
+      executionMode: string;
+      schedule: string;
+      label: string;
+      labelOptional: string;
+    };
+    priority: {
+      urgent: string;
+      high: string;
+      medium: string;
+      low: string;
+      none: string;
+    };
+    executionMode: {
+      createIssue: string;
+      runOnly: string;
+    };
+    templates: {
+      dailyNewsDigest: string;
+      prReviewReminder: string;
+      bugTriage: string;
+      weeklyProgressReport: string;
+      dependencyAudit: string;
+      documentationCheck: string;
+    };
+    relativeDate: {
+      today: string;
+      daysAgo: string;
+      monthsAgo: string;
+    };
+    toast: {
+      updated: string;
+      updateFailed: string;
+      triggered: string;
+      triggerFailed: string;
+      deleted: string;
+      deleteFailed: string;
+      triggerDeleted: string;
+      triggerAdded: string;
+      triggerAddFailed: string;
+      created: string;
+      createFailed: string;
+      createdTriggerFailed: string;
+    };
+    placeholders: {
+      namePlaceholder: string;
+      promptPlaceholder: string;
+      selectAgent: string;
+      unknownAgent: string;
+      labelPlaceholder: string;
+    };
+    ariaLabels: {
+      pauseAutopilot: string;
+      activateAutopilot: string;
+    };
+    actionsLabels: {
+      runNow: string;
+      runningNow: string;
+      edit: string;
+      addTrigger: string;
+      deleteAutopilot: string;
+      create: string;
+      creating: string;
+      save: string;
+      saving: string;
+      adding: string;
+    };
   };
   agents: {
     status: {

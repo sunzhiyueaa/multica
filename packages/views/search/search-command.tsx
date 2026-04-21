@@ -35,6 +35,7 @@ import { paths, useCurrentWorkspace, useWorkspacePaths } from "@multica/core/pat
 import type { WorkspacePaths } from "@multica/core/paths";
 import { useModalStore } from "@multica/core/modals";
 import { workspaceListOptions } from "@multica/core/workspace/queries";
+import { useLocale } from "@multica/core/i18n";
 import { StatusIcon } from "../issues/components";
 import { STATUS_CONFIG } from "@multica/core/issues/config";
 import { PROJECT_STATUS_CONFIG } from "@multica/core/projects/config";
@@ -106,17 +107,6 @@ interface NavPage {
   keywords: string[];
 }
 
-const navPages: NavPage[] = [
-  { key: "inbox", label: "Inbox", icon: Inbox, keywords: ["inbox", "notifications"] },
-  { key: "myIssues", label: "My Issues", icon: CircleUser, keywords: ["my", "issues", "assigned"] },
-  { key: "issues", label: "Issues", icon: ListTodo, keywords: ["issues", "tasks", "bugs"] },
-  { key: "projects", label: "Projects", icon: FolderKanban, keywords: ["projects", "kanban"] },
-  { key: "agents", label: "Agents", icon: Bot, keywords: ["agents", "bots", "ai"] },
-  { key: "runtimes", label: "Runtimes", icon: Monitor, keywords: ["runtimes", "environments"] },
-  { key: "skills", label: "Skills", icon: BookOpenText, keywords: ["skills", "library"] },
-  { key: "settings", label: "Settings", icon: Settings, keywords: ["settings", "config", "preferences"] },
-];
-
 type ThemeValue = "light" | "dark" | "system";
 
 interface CommandItem {
@@ -134,6 +124,7 @@ interface SearchResults {
 }
 
 export function SearchCommand() {
+  const { t } = useLocale();
   const { push, pathname, getShareableUrl } = useNavigation();
   const open = useSearchStore((s) => s.open);
   const setOpen = useSearchStore((s) => s.setOpen);
@@ -153,6 +144,17 @@ export function SearchCommand() {
     });
   }, [recentItems, allIssues]);
 
+  const navPages: NavPage[] = useMemo(() => [
+    { key: "inbox", label: t.sidebar.inbox, icon: Inbox, keywords: ["inbox", "notifications"] },
+    { key: "myIssues", label: t.sidebar.myIssues, icon: CircleUser, keywords: ["my", "issues", "assigned"] },
+    { key: "issues", label: t.sidebar.issues, icon: ListTodo, keywords: ["issues", "tasks", "bugs"] },
+    { key: "projects", label: t.sidebar.projects, icon: FolderKanban, keywords: ["projects", "kanban"] },
+    { key: "agents", label: t.sidebar.agents, icon: Bot, keywords: ["agents", "bots", "ai"] },
+    { key: "runtimes", label: t.sidebar.runtimes, icon: Monitor, keywords: ["runtimes", "environments"] },
+    { key: "skills", label: "Skills", icon: BookOpenText, keywords: ["skills", "library"] },
+    { key: "settings", label: t.sidebar.settings, icon: Settings, keywords: ["settings", "config", "preferences"] },
+  ], [t]);
+
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResults>({ issues: [], projects: [] });
   const [isLoading, setIsLoading] = useState(false);
@@ -167,7 +169,7 @@ export function SearchCommand() {
         page.label.toLowerCase().includes(q) ||
         page.keywords.some((kw) => kw.includes(q)),
     );
-  }, [query]);
+  }, [navPages, query]);
 
   // Detect if current route is an issue detail page — /{slug}/issues/{id}.
   // Falls back to null on any other route; used to gate issue-specific commands.
@@ -442,7 +444,7 @@ export function SearchCommand() {
         showCloseButton={false}
       >
         <DialogHeader className="sr-only">
-          <DialogTitle>Search</DialogTitle>
+          <DialogTitle>{t.search.dialogTitle}</DialogTitle>
           <DialogDescription>
             Search pages, issues, and projects
           </DialogDescription>
@@ -455,7 +457,7 @@ export function SearchCommand() {
           <div className="flex items-center gap-3 border-b px-4 py-3">
             <SearchIcon className="size-5 shrink-0 text-muted-foreground" />
             <CommandPrimitive.Input
-              placeholder="Type a command or search..."
+              placeholder={t.search.placeholder}
               value={query}
               onValueChange={handleValueChange}
               className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
@@ -550,7 +552,7 @@ export function SearchCommand() {
               filteredCommands.length === 0 &&
               filteredWorkspaces.length === 0 && (
                 <CommandPrimitive.Empty className="py-10 text-center text-sm text-muted-foreground">
-                  No results found.
+                  {t.search.noResults}
                 </CommandPrimitive.Empty>
               )}
 
@@ -645,7 +647,7 @@ export function SearchCommand() {
               <CommandPrimitive.Group className="p-2">
                 <div className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-muted-foreground">
                   <Clock className="size-3" />
-                  <span>Recent</span>
+                  <span>{t.search.recent}</span>
                 </div>
                 {recentIssues.map((item) => (
                   <CommandPrimitive.Item
