@@ -19,7 +19,7 @@ export function CreateWorkspaceModal({ onClose }: { onClose: () => void }) {
   // we hide the traffic lights for its lifetime so the Back button in the top-
   // left corner isn't stolen by the native controls' hit-test. No-op elsewhere.
   useImmersiveMode();
-  const t = useLocale();
+  const { t } = useLocale();
   const router = useNavigation();
 
   return (

@@ -54,7 +54,7 @@ function PillButton({
 // ---------------------------------------------------------------------------
 
 export function CreateIssueModal({ onClose, data }: { onClose: () => void; data?: Record<string, unknown> | null }) {
-  const t = useLocale();
+  const { t } = useLocale();
   const router = useNavigation();
   const p = useWorkspacePaths();
   const workspaceName = useCurrentWorkspace()?.name;
@@ -131,7 +131,7 @@ export function CreateIssueModal({ onClose, data }: { onClose: () => void; data?
       }
 
       if (!shouldShowBacklogHint) {
-        toast.custom((t) => (
+        toast.custom((toastId) => (
           <div className="bg-popover text-popover-foreground border rounded-lg shadow-lg p-4 w-[360px]">
             <div className="flex items-center gap-2 mb-2">
               <div className="flex items-center justify-center size-5 rounded-full bg-emerald-500/15 text-emerald-500">
@@ -148,7 +148,7 @@ export function CreateIssueModal({ onClose, data }: { onClose: () => void; data?
               className="ml-7 mt-2 text-sm text-primary hover:underline cursor-pointer"
               onClick={() => {
                 router.push(p.issueDetail(issue.id));
-                toast.dismiss(t);
+                toast.dismiss(toastId);
               }}
             >
               {t.modals.createIssue.viewIssue}

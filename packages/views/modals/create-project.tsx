@@ -55,7 +55,7 @@ function PillButton({
 }
 
 export function CreateProjectModal({ onClose }: { onClose: () => void }) {
-  const t = useLocale();
+  const { t } = useLocale();
   const router = useNavigation();
   const workspace = useCurrentWorkspace();
   const workspaceName = workspace?.name;

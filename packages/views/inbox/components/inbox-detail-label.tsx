@@ -2,11 +2,11 @@
 
 import { STATUS_CONFIG, PRIORITY_CONFIG } from "@multica/core/issues/config";
 import { useActorName } from "@multica/core/workspace/hooks";
-import { useI18n } from "@multica/core/i18n";
+import { useLocale, type DashboardDict } from "@multica/core/i18n";
 import { StatusIcon, PriorityIcon } from "../../issues/components";
 import type { InboxItem, InboxItemType, IssueStatus, IssuePriority } from "@multica/core/types";
 
-export function getTypeLabel(t: ReturnType<typeof useI18n>, type: InboxItemType): string {
+export function getTypeLabel(t: DashboardDict, type: InboxItemType): string {
   const { notification } = t.inbox;
   switch (type) {
     case "issue_assigned":
@@ -52,7 +52,7 @@ function shortDate(dateStr: string): string {
 
 export function InboxDetailLabel({ item }: { item: InboxItem }) {
   const { getActorName } = useActorName();
-  const t = useI18n();
+  const { t } = useLocale();
   const { labels } = t.inbox;
   const details = item.details ?? {};
 

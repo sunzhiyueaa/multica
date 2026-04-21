@@ -53,4 +53,8 @@ export const common: DashboardDict["common"] = {
   accepted: "Accepted",
   declined: "Declined",
   to: "to",
+  copyLink: "Copy link",
+  openLink: "Open link",
+  failedToCopy: "Failed to copy",
+  below: "below",
 };

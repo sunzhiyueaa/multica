@@ -2,6 +2,7 @@
 
 import { Check, FolderKanban, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocale } from "@multica/core/i18n";
 import { projectListOptions } from "@multica/core/projects/queries";
 import { useWorkspaceId } from "@multica/core/hooks";
 import type { UpdateIssueRequest } from "@multica/core/types";
@@ -24,6 +25,7 @@ export function ProjectPicker({
   triggerRender?: React.ReactElement;
   align?: "start" | "center" | "end";
 }) {
+  const { t } = useLocale();
   const wsId = useWorkspaceId();
   const { data: projects = [] } = useQuery(projectListOptions(wsId));
   const current = projects.find((p) => p.id === projectId);
@@ -35,7 +37,7 @@ export function ProjectPicker({
         render={triggerRender}
       >
         <FolderKanban className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-        <span className="truncate">{current ? current.title : "No project"}</span>
+        <span className="truncate">{current ? current.title : t.projects.picker.noProject}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align={align} className="w-52">
         {projects.map((p) => (
@@ -49,11 +51,11 @@ export function ProjectPicker({
         {projectId && (
           <DropdownMenuItem onClick={() => onUpdate({ project_id: null })}>
             <X className="h-3.5 w-3.5 text-muted-foreground" />
-            Remove from project
+            {t.projects.picker.removeFromProject}
           </DropdownMenuItem>
         )}
         {projects.length === 0 && (
-          <div className="px-2 py-1.5 text-xs text-muted-foreground">No projects yet</div>
+          <div className="px-2 py-1.5 text-xs text-muted-foreground">{t.projects.picker.noProjectsYet}</div>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

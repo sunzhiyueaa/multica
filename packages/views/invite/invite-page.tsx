@@ -8,6 +8,7 @@ import {
   workspaceListOptions,
 } from "@multica/core/workspace/queries";
 import { paths } from "@multica/core/paths";
+import { useLocale } from "@multica/core/i18n";
 import { useNavigation } from "../navigation";
 import { useLogout } from "../auth";
 import { Button } from "@multica/ui/components/ui/button";
@@ -36,6 +37,7 @@ export interface InvitePageProps {
 export function InvitePage({ invitationId, onBack }: InvitePageProps) {
   const { push } = useNavigation();
   const qc = useQueryClient();
+  const { t } = useLocale();
   const [accepting, setAccepting] = useState(false);
   const [declining, setDeclining] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -115,12 +117,12 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
               <X className="h-6 w-6 text-muted-foreground" />
             </div>
-            <h2 className="text-lg font-semibold">Invitation not found</h2>
+            <h2 className="text-lg font-semibold">{t.auth.invite.notFound}</h2>
             <p className="text-sm text-muted-foreground text-center">
-              This invitation may have expired, been revoked, or doesn&apos;t belong to your account.
+              {t.auth.invite.notFoundDesc}
             </p>
             <Button variant="outline" onClick={() => push(fallbackDest)}>
-              Go to dashboard
+              {t.auth.invite.goToDashboard}
             </Button>
           </CardContent>
         </Card>
@@ -136,8 +138,10 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
               <Check className="h-6 w-6 text-primary" />
             </div>
-            <h2 className="text-lg font-semibold">You joined {invitation.workspace_name}!</h2>
-            <p className="text-sm text-muted-foreground">Redirecting to workspace...</p>
+            <h2 className="text-lg font-semibold">
+              {t.auth.invite.joined.replace("{workspace}", invitation.workspace_name ?? "workspace")}
+            </h2>
+            <p className="text-sm text-muted-foreground">{t.auth.invite.redirecting}</p>
           </CardContent>
         </Card>
       </InviteShell>
@@ -149,10 +153,10 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
       <InviteShell onBack={onBack}>
         <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center gap-4 py-12">
-            <h2 className="text-lg font-semibold">Invitation declined</h2>
-            <p className="text-sm text-muted-foreground">You won&apos;t be added to this workspace.</p>
+            <h2 className="text-lg font-semibold">{t.auth.invite.declined}</h2>
+            <p className="text-sm text-muted-foreground">{t.auth.invite.declinedDesc}</p>
             <Button variant="outline" onClick={() => push(fallbackDest)}>
-              Go to dashboard
+              {t.auth.invite.goToDashboard}
             </Button>
           </CardContent>
         </Card>
@@ -173,21 +177,22 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
 
           <div className="text-center space-y-2">
             <h2 className="text-xl font-semibold">
-              Join {invitation.workspace_name ?? "workspace"}
+              {t.auth.invite.joinTitle.replace("{workspace}", invitation.workspace_name ?? "workspace")}
             </h2>
             <p className="text-sm text-muted-foreground">
-              <strong>{invitation.inviter_name || invitation.inviter_email}</strong>{" "}
-              invited you to join as {invitation.role === "admin" ? "an admin" : "a member"}.
+              {t.auth.invite.invitedBy
+                .replace("{inviter}", invitation.inviter_name || invitation.inviter_email || "Unknown")
+                .replace("{role}", invitation.role === "admin" ? t.auth.invite.roleAdmin : t.auth.invite.roleMember)}
             </p>
           </div>
 
           {isAlreadyHandled ? (
             <div className="text-sm text-muted-foreground">
-              This invitation has already been {invitation.status}.
+              {t.auth.invite.alreadyHandled.replace("{status}", t.common[invitation.status as "accepted" | "declined"])}
             </div>
           ) : isExpired ? (
             <div className="text-sm text-muted-foreground">
-              This invitation has expired.
+              {t.auth.invite.expired}
             </div>
           ) : (
             <div className="flex gap-3 w-full">
@@ -197,14 +202,14 @@ export function InvitePage({ invitationId, onBack }: InvitePageProps) {
                 onClick={handleDecline}
                 disabled={accepting || declining}
               >
-                {declining ? "Declining..." : "Decline"}
+                {declining ? t.auth.invite.declining : t.auth.invite.declineButton}
               </Button>
               <Button
                 className="flex-1"
                 onClick={handleAccept}
                 disabled={accepting || declining}
               >
-                {accepting ? "Joining..." : "Accept & Join"}
+                {accepting ? t.auth.invite.accepting : t.auth.invite.acceptButton}
               </Button>
             </div>
           )}
@@ -231,6 +236,7 @@ function InviteShell({
   children: ReactNode;
 }) {
   const logout = useLogout();
+  const { t } = useLocale();
   return (
     <div className="relative flex min-h-svh flex-col items-center justify-center bg-background px-6 py-12">
       {onBack && (
@@ -241,7 +247,7 @@ function InviteShell({
           onClick={onBack}
         >
           <ArrowLeft />
-          Back
+          {t.auth.invite.back}
         </Button>
       )}
       <Button
@@ -251,7 +257,7 @@ function InviteShell({
         onClick={logout}
       >
         <LogOut />
-        Log out
+        {t.auth.invite.logOut}
       </Button>
       {children}
     </div>

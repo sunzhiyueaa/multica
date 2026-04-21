@@ -6,6 +6,7 @@ import { cn } from "@multica/ui/lib/utils";
 import { useChatStore } from "@multica/core/chat";
 import { chatSessionsOptions, pendingChatTasksOptions } from "@multica/core/chat/queries";
 import { useWorkspaceId } from "@multica/core/hooks";
+import { useLocale } from "@multica/core/i18n";
 import { createLogger } from "@multica/core/logger";
 import {
   Tooltip,
@@ -17,6 +18,7 @@ const logger = createLogger("chat.ui");
 
 export function ChatFab() {
   const wsId = useWorkspaceId();
+  const { t } = useLocale();
   const isOpen = useChatStore((s) => s.isOpen);
   const toggle = useChatStore((s) => s.toggle);
   const { data: sessions = [] } = useQuery(chatSessionsOptions(wsId));
@@ -34,10 +36,10 @@ export function ChatFab() {
 
   // Tooltip text communicates the state that isn't carried by the icon/badge.
   const tooltip = isRunning
-    ? "Multica is working..."
+    ? t.chat.fab.working
     : unreadSessionCount > 0
-      ? `${unreadSessionCount} unread ${unreadSessionCount === 1 ? "chat" : "chats"}`
-      : "Ask Multica";
+      ? `${unreadSessionCount} ${unreadSessionCount === 1 ? t.chat.fab.unreadSingular : t.chat.fab.unreadPlural}`
+      : t.chat.fab.ask;
 
   return (
     <Tooltip>

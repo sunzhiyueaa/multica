@@ -5,7 +5,7 @@ import { useDefaultLayout } from "react-resizable-panels";
 import { useQuery } from "@tanstack/react-query";
 import { useWorkspaceId } from "@multica/core/hooks";
 import { useWorkspacePaths } from "@multica/core/paths";
-import { useI18n } from "@multica/core/i18n";
+import { useLocale } from "@multica/core/i18n";
 import {
   inboxListOptions,
   deduplicateInboxItems,
@@ -54,7 +54,7 @@ export function InboxPage() {
   const { searchParams, replace } = useNavigation();
   const urlIssue = searchParams.get("issue") ?? "";
   const wsPaths = useWorkspacePaths();
-  const t = useI18n();
+  const { t } = useLocale();
 
   const [selectedKey, setSelectedKeyState] = useState(() => urlIssue);
 

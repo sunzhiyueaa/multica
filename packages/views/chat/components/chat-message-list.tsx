@@ -13,6 +13,7 @@ import { Loader2, ChevronRight, ChevronDown, Brain, AlertCircle } from "lucide-r
 import { useScrollFade } from "@multica/ui/hooks/use-scroll-fade";
 import { useAutoScroll } from "@multica/ui/hooks/use-auto-scroll";
 import { taskMessagesOptions } from "@multica/core/chat/queries";
+import { useLocale } from "@multica/core/i18n";
 import { Markdown } from "@multica/views/common/markdown";
 import type { ChatMessage, TaskMessagePayload } from "@multica/core/types";
 import type { ChatTimelineItem } from "@multica/core/chat";
@@ -236,9 +237,10 @@ function ToolGroupCollapsible({
   items: ChatTimelineItem[];
   defaultOpen?: boolean;
 }) {
+  const { t } = useLocale();
   const [open, setOpen] = useState(defaultOpen ?? false);
   const toolCount = items.filter((i) => i.type === "tool_use").length;
-  const label = `${toolCount} ${toolCount === 1 ? "tool" : "tools"}`;
+  const label = `${toolCount} ${toolCount === 1 ? t.chat.timeline.toolSingular : t.chat.timeline.toolPlural}`;
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
@@ -333,11 +335,12 @@ function ToolCallRow({ item }: { item: ChatTimelineItem }) {
 }
 
 function ToolResultRow({ item }: { item: ChatTimelineItem }) {
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const output = item.output ?? "";
   if (!output) return null;
 
-  const preview = output.length > 120 ? output.slice(0, 120) + "..." : output;
+  const preview = output.length > 120 ? output.slice(0, 120) + t.chat.timeline.truncated : output;
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
@@ -346,12 +349,12 @@ function ToolResultRow({ item }: { item: ChatTimelineItem }) {
           className={cn("h-3 w-3 shrink-0 text-muted-foreground transition-transform mt-0.5", open && "rotate-90")}
         />
         <span className="text-muted-foreground/70 truncate">
-          {item.tool ? `${item.tool} result: ` : "result: "}{preview}
+          {item.tool ? `${item.tool} ${t.chat.timeline.resultPrefix}` : t.chat.timeline.resultPrefix}{preview}
         </span>
       </CollapsibleTrigger>
       <CollapsibleContent>
         <pre className="ml-[18px] mt-0.5 max-h-40 overflow-auto rounded bg-muted/50 p-2 text-[11px] text-muted-foreground whitespace-pre-wrap break-all">
-          {output.length > 4000 ? output.slice(0, 4000) + "\n... (truncated)" : output}
+          {output.length > 4000 ? output.slice(0, 4000) + "\n" + t.chat.timeline.truncated : output}
         </pre>
       </CollapsibleContent>
     </Collapsible>
@@ -359,11 +362,12 @@ function ToolResultRow({ item }: { item: ChatTimelineItem }) {
 }
 
 function ThinkingRow({ item }: { item: ChatTimelineItem }) {
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const text = item.content ?? "";
   if (!text) return null;
 
-  const preview = text.length > 150 ? text.slice(0, 150) + "..." : text;
+  const preview = text.length > 150 ? text.slice(0, 150) + t.chat.timeline.truncated : text;
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>

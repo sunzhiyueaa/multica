@@ -4,12 +4,12 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Loader2, CheckCircle2, XCircle, Zap } from "lucide-react";
 import { Button } from "@multica/ui/components/ui/button";
 import { api } from "@multica/core/api";
-import { useLocale } from "@multica/core/i18n";
+import { useLocale, type DashboardDict } from "@multica/core/i18n";
 import type { RuntimePingStatus } from "@multica/core/types";
 
 const pingStatusConfig: Record<
   RuntimePingStatus,
-  { labelKey: keyof typeof import("@multica/core/i18n/modules/runtimes").runtimes["connection"]; icon: typeof Loader2; color: string }
+  { labelKey: keyof DashboardDict["runtimes"]["connection"]; icon: typeof Loader2; color: string }
 > = {
   pending: { labelKey: "waitingDaemon", icon: Loader2, color: "text-muted-foreground" },
   running: { labelKey: "runningTest", icon: Loader2, color: "text-info" },

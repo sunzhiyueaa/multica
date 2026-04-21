@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@multica/ui/components/ui/button";
 import { api } from "@multica/core/api";
-import { useLocale } from "@multica/core/i18n";
+import { useLocale, type DashboardDict } from "@multica/core/i18n";
 import type { RuntimeUpdateStatus } from "@multica/core/types";
 
 const GITHUB_RELEASES_URL =
@@ -56,7 +56,7 @@ function isNewer(latest: string, current: string): boolean {
 
 const statusConfig: Record<
   RuntimeUpdateStatus,
-  { labelKey: keyof typeof import("@multica/core/i18n/modules/runtimes").runtimes["cli"]; icon: typeof Loader2; color: string }
+  { labelKey: keyof DashboardDict["runtimes"]["cli"]; icon: typeof Loader2; color: string }
 > = {
   pending: {
     labelKey: "waitingDaemon",

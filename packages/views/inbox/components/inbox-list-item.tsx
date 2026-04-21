@@ -1,13 +1,13 @@
 "use client";
 
-import { useI18n } from "@multica/core/i18n";
+import { useLocale, type DashboardDict } from "@multica/core/i18n";
 import { StatusIcon } from "../../issues/components";
 import { ActorAvatar } from "../../common/actor-avatar";
 import { Archive } from "lucide-react";
 import type { InboxItem } from "@multica/core/types";
 import { InboxDetailLabel } from "./inbox-detail-label";
 
-function timeAgo(t: ReturnType<typeof useI18n>, dateStr: string): string {
+function timeAgo(t: DashboardDict, dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const minutes = Math.floor(diff / 60000);
   if (minutes < 1) return t.inbox.time.justNow;
@@ -31,7 +31,7 @@ export function InboxListItem({
   onClick: () => void;
   onArchive: () => void;
 }) {
-  const t = useI18n();
+  const { t } = useLocale();
 
   return (
     <button
