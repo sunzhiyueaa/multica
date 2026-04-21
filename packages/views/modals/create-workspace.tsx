@@ -3,6 +3,7 @@
 import { useNavigation } from "../navigation";
 import { useImmersiveMode } from "../platform";
 import { ArrowLeft } from "lucide-react";
+import { useLocale } from "@multica/core/i18n";
 import { Button } from "@multica/ui/components/ui/button";
 import {
   Dialog,
@@ -18,6 +19,7 @@ export function CreateWorkspaceModal({ onClose }: { onClose: () => void }) {
   // we hide the traffic lights for its lifetime so the Back button in the top-
   // left corner isn't stolen by the native controls' hit-test. No-op elsewhere.
   useImmersiveMode();
+  const t = useLocale();
   const router = useNavigation();
 
   return (
@@ -49,17 +51,16 @@ export function CreateWorkspaceModal({ onClose }: { onClose: () => void }) {
           onClick={onClose}
         >
           <ArrowLeft className="h-4 w-4" />
-          Back
+          {t.modals.createWorkspace.back}
         </Button>
 
         <div className="flex w-full max-w-md flex-col items-center gap-6">
           <div className="text-center">
             <DialogTitle className="text-2xl font-semibold">
-              Create a new workspace
+              {t.modals.createWorkspace.title}
             </DialogTitle>
             <DialogDescription className="mt-2">
-              Workspaces are shared environments where teams can work on
-              projects and issues.
+              {t.modals.createWorkspace.description}
             </DialogDescription>
           </div>
           <CreateWorkspaceForm
